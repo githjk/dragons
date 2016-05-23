@@ -1,0 +1,50 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>CMDragons 02 Help File</title>
+  </head>
+
+  <body>
+    <h1>CMDragons 02 Tactics Help</h1>
+
+    <body bgcolor="#FFFFFF">
+
+      <h2> Introduction </h2>
+
+      <p>
+	There are a whole range of low-level tactics for running the robots. The
+	GUI can call these tactics directly to aid in testing the low-level routines.
+	To execute a tactic, select on a robot, then go to teh tactic box at the top
+	of the GUI. Click on the drop down list and select the tactic you want.
+	Add any parameters to the right hand edit box if you need them. Then click
+	on <i>Go</i>. Likewise, click on <i>Stop</i> to stop the tactic from
+	executing.
+	</p>
+      <h2> Tactics </h2>
+
+      <p> The tactic parameters and operation are:</p>
+      <ul>
+	<li> None: do nothing </li>
+	<li> NULL: execute the default tactic...soon to be depricated </li>
+	<li> stop: do the halt and stand still tactic</li>
+	<li> shoot: execute a shoot: parameters ..????</li>
+	<li> pass: pass to another robot </li>
+	<li> goalie: execute the goalie behavior</li>
+	<li> block</li>
+	<li> defend cross </li>
+	<li> latency - performs the latency testing </li>
+	<li> test_step < vx vy va filename > test the step response of a robot
+	records the results to filename </li>
+	<li> test_ramp < vx vy va ax ay aa filename > tests the ramp response
+	of a robot. It ramps with constant acceleration <b>a</b> to peak velocity
+	<b>v</b> and stores the resultsl to the file filename</li>
+      </ul>
+
+<hr>
+<address><a href="mailto:brettb@cs.cmu.edu">Brett Browning</a></address>
+<!-- Created: Wed Feb  6 12:11:02 EST 2002 -->
+<!-- hhmts start -->
+Last modified: Sun Apr 21 18:39:12 EDT 2002
+<!-- hhmts end -->
+    </body>
+</html>

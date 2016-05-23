@@ -1,0 +1,894 @@
+<?xml version="1.0"?>
+<GTK-Interface>
+
+<project>
+  <name>cmveditor</name>
+  <program_name>cmveditor</program_name>
+  <directory></directory>
+  <source_directory>.</source_directory>
+  <pixmaps_directory>pixmaps</pixmaps_directory>
+  <language>C</language>
+  <gnome_support>False</gnome_support>
+  <gettext_support>False</gettext_support>
+  <use_widget_names>True</use_widget_names>
+  <output_build_files>False</output_build_files>
+  <backup_source_files>False</backup_source_files>
+  <main_source_file>interface.cc</main_source_file>
+  <handler_source_file>callbacks.cc</handler_source_file>
+  <support_source_file>support.cc</support_source_file>
+</project>
+
+<widget>
+  <class>GtkWindow</class>
+  <name>cmveditor</name>
+  <signal>
+    <name>destroy</name>
+    <handler>OnQuit</handler>
+    <last_modification_time>Sat, 24 Nov 2001 01:54:38 GMT</last_modification_time>
+  </signal>
+  <signal>
+    <name>key_press_event</name>
+    <handler>OnKeyPress</handler>
+    <last_modification_time>Tue, 13 Nov 2001 19:55:27 GMT</last_modification_time>
+  </signal>
+  <title>CMVeditor</title>
+  <type>GTK_WINDOW_TOPLEVEL</type>
+  <position>GTK_WIN_POS_NONE</position>
+  <modal>False</modal>
+  <allow_shrink>False</allow_shrink>
+  <allow_grow>True</allow_grow>
+  <auto_shrink>False</auto_shrink>
+
+  <widget>
+    <class>GtkVBox</class>
+    <name>vbox1</name>
+    <homogeneous>False</homogeneous>
+    <spacing>0</spacing>
+
+    <widget>
+      <class>GtkVBox</class>
+      <name>vbox4</name>
+      <homogeneous>False</homogeneous>
+      <spacing>0</spacing>
+      <child>
+	<padding>4</padding>
+	<expand>False</expand>
+	<fill>True</fill>
+      </child>
+
+      <widget>
+	<class>GtkHBox</class>
+	<name>hbox6</name>
+	<homogeneous>False</homogeneous>
+	<spacing>0</spacing>
+	<child>
+	  <padding>0</padding>
+	  <expand>False</expand>
+	  <fill>False</fill>
+	</child>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label11</name>
+	  <label>Params File</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>5</xpad>
+	  <ypad>0</ypad>
+	  <child>
+	    <padding>0</padding>
+	    <expand>False</expand>
+	    <fill>False</fill>
+	  </child>
+	</widget>
+
+	<widget>
+	  <class>GtkEntry</class>
+	  <name>paramsfile</name>
+	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>activate</name>
+	    <handler>OnParamsActivate</handler>
+	    <last_modification_time>Wed, 22 May 2002 00:32:31 GMT</last_modification_time>
+	  </signal>
+	  <editable>True</editable>
+	  <text_visible>True</text_visible>
+	  <text_max_length>0</text_max_length>
+	  <text>params-low.txt</text>
+	  <child>
+	    <padding>0</padding>
+	    <expand>True</expand>
+	    <fill>True</fill>
+	  </child>
+	</widget>
+      </widget>
+    </widget>
+
+    <widget>
+      <class>GtkVBox</class>
+      <name>vbox2</name>
+      <homogeneous>False</homogeneous>
+      <spacing>0</spacing>
+      <child>
+	<padding>0</padding>
+	<expand>False</expand>
+	<fill>False</fill>
+      </child>
+
+      <widget>
+	<class>GtkHButtonBox</class>
+	<name>hbuttonbox5</name>
+	<layout_style>GTK_BUTTONBOX_DEFAULT_STYLE</layout_style>
+	<spacing>30</spacing>
+	<child_min_width>85</child_min_width>
+	<child_min_height>27</child_min_height>
+	<child_ipad_x>7</child_ipad_x>
+	<child_ipad_y>0</child_ipad_y>
+	<child>
+	  <padding>0</padding>
+	  <expand>False</expand>
+	  <fill>False</fill>
+	</child>
+
+	<widget>
+	  <class>GtkButton</class>
+	  <name>pload_button</name>
+	  <can_default>True</can_default>
+	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>clicked</name>
+	    <handler>OnParamsLoad</handler>
+	    <last_modification_time>Wed, 22 May 2002 00:31:33 GMT</last_modification_time>
+	  </signal>
+	  <label>Load...</label>
+	  <relief>GTK_RELIEF_NORMAL</relief>
+	</widget>
+
+	<widget>
+	  <class>GtkButton</class>
+	  <name>psave_button</name>
+	  <can_default>True</can_default>
+	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>clicked</name>
+	    <handler>OnParamsSave</handler>
+	    <last_modification_time>Wed, 22 May 2002 00:31:13 GMT</last_modification_time>
+	  </signal>
+	  <label>Save</label>
+	  <relief>GTK_RELIEF_NORMAL</relief>
+	</widget>
+
+	<widget>
+	  <class>GtkButton</class>
+	  <name>psaveas_button</name>
+	  <can_default>True</can_default>
+	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>clicked</name>
+	    <handler>OnParamsSaveAs</handler>
+	    <last_modification_time>Wed, 22 May 2002 00:31:26 GMT</last_modification_time>
+	  </signal>
+	  <label>Save As...</label>
+	  <relief>GTK_RELIEF_NORMAL</relief>
+	</widget>
+      </widget>
+
+      <widget>
+	<class>GtkTable</class>
+	<name>table4</name>
+	<rows>2</rows>
+	<columns>2</columns>
+	<homogeneous>False</homogeneous>
+	<row_spacing>0</row_spacing>
+	<column_spacing>0</column_spacing>
+	<child>
+	  <padding>0</padding>
+	  <expand>False</expand>
+	  <fill>False</fill>
+	</child>
+
+	<widget>
+	  <class>GtkButton</class>
+	  <name>grab_single_button</name>
+	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>clicked</name>
+	    <handler>OnGrabClicked</handler>
+	    <data>(gpointer) 0</data>
+	    <last_modification_time>Wed, 22 May 2002 00:38:26 GMT</last_modification_time>
+	  </signal>
+	  <label>Grab Single</label>
+	  <relief>GTK_RELIEF_NORMAL</relief>
+	  <child>
+	    <left_attach>1</left_attach>
+	    <right_attach>2</right_attach>
+	    <top_attach>0</top_attach>
+	    <bottom_attach>1</bottom_attach>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	    <xexpand>False</xexpand>
+	    <yexpand>False</yexpand>
+	    <xshrink>False</xshrink>
+	    <yshrink>False</yshrink>
+	    <xfill>True</xfill>
+	    <yfill>False</yfill>
+	  </child>
+	</widget>
+
+	<widget>
+	  <class>GtkButton</class>
+	  <name>saveimage_button</name>
+	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>clicked</name>
+	    <handler>OnSaveImageClicked</handler>
+	    <last_modification_time>Thu, 11 Oct 2001 00:03:57 GMT</last_modification_time>
+	  </signal>
+	  <label>Save Image...</label>
+	  <relief>GTK_RELIEF_NORMAL</relief>
+	  <child>
+	    <left_attach>1</left_attach>
+	    <right_attach>2</right_attach>
+	    <top_attach>1</top_attach>
+	    <bottom_attach>2</bottom_attach>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	    <xexpand>True</xexpand>
+	    <yexpand>True</yexpand>
+	    <xshrink>False</xshrink>
+	    <yshrink>False</yshrink>
+	    <xfill>True</xfill>
+	    <yfill>False</yfill>
+	  </child>
+	</widget>
+
+	<widget>
+	  <class>GtkCheckButton</class>
+	  <name>rawvision_button</name>
+	  <can_focus>True</can_focus>
+	  <accelerator>
+	    <modifiers>0</modifiers>
+	    <key>GDK_c</key>
+	    <signal>toggled</signal>
+	  </accelerator>
+	  <signal>
+	    <name>toggled</name>
+	    <handler>OnRawToggle</handler>
+	    <last_modification_time>Thu, 11 Oct 2001 00:03:39 GMT</last_modification_time>
+	  </signal>
+	  <label>Raw vision output</label>
+	  <active>False</active>
+	  <draw_indicator>True</draw_indicator>
+	  <child>
+	    <left_attach>0</left_attach>
+	    <right_attach>1</right_attach>
+	    <top_attach>1</top_attach>
+	    <bottom_attach>2</bottom_attach>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	    <xexpand>True</xexpand>
+	    <yexpand>True</yexpand>
+	    <xshrink>False</xshrink>
+	    <yshrink>False</yshrink>
+	    <xfill>True</xfill>
+	    <yfill>False</yfill>
+	  </child>
+	</widget>
+
+	<widget>
+	  <class>GtkButton</class>
+	  <name>grab_button</name>
+	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>clicked</name>
+	    <handler>OnGrabClicked</handler>
+	    <data>(gpointer) 1</data>
+	    <last_modification_time>Wed, 22 May 2002 00:38:19 GMT</last_modification_time>
+	  </signal>
+	  <label>Grab</label>
+	  <relief>GTK_RELIEF_NORMAL</relief>
+	  <child>
+	    <left_attach>0</left_attach>
+	    <right_attach>1</right_attach>
+	    <top_attach>0</top_attach>
+	    <bottom_attach>1</bottom_attach>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	    <xexpand>True</xexpand>
+	    <yexpand>True</yexpand>
+	    <xshrink>False</xshrink>
+	    <yshrink>False</yshrink>
+	    <xfill>True</xfill>
+	    <yfill>False</yfill>
+	  </child>
+	</widget>
+      </widget>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator2</name>
+      <child>
+	<padding>0</padding>
+	<expand>False</expand>
+	<fill>False</fill>
+      </child>
+    </widget>
+
+    <widget>
+      <class>GtkVBox</class>
+      <name>vbox5</name>
+      <homogeneous>False</homogeneous>
+      <spacing>0</spacing>
+      <child>
+	<padding>0</padding>
+	<expand>False</expand>
+	<fill>False</fill>
+      </child>
+
+      <widget>
+	<class>GtkTable</class>
+	<name>table3</name>
+	<rows>2</rows>
+	<columns>2</columns>
+	<homogeneous>False</homogeneous>
+	<row_spacing>0</row_spacing>
+	<column_spacing>0</column_spacing>
+	<child>
+	  <padding>0</padding>
+	  <expand>True</expand>
+	  <fill>True</fill>
+	</child>
+
+	<widget>
+	  <class>GtkRadioButton</class>
+	  <name>video1button</name>
+	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>toggled</name>
+	    <handler>OnVideoToggle</handler>
+	    <data>(gpointer) 1</data>
+	    <last_modification_time>Thu, 11 Oct 2001 00:31:40 GMT</last_modification_time>
+	  </signal>
+	  <label>Video Channel 1</label>
+	  <active>False</active>
+	  <draw_indicator>True</draw_indicator>
+	  <child>
+	    <left_attach>0</left_attach>
+	    <right_attach>1</right_attach>
+	    <top_attach>1</top_attach>
+	    <bottom_attach>2</bottom_attach>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	    <xexpand>True</xexpand>
+	    <yexpand>True</yexpand>
+	    <xshrink>False</xshrink>
+	    <yshrink>False</yshrink>
+	    <xfill>True</xfill>
+	    <yfill>False</yfill>
+	  </child>
+	</widget>
+
+	<widget>
+	  <class>GtkButton</class>
+	  <name>applybutton</name>
+	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>clicked</name>
+	    <handler>OnChannelApplyClicked</handler>
+	    <last_modification_time>Thu, 11 Oct 2001 00:12:00 GMT</last_modification_time>
+	  </signal>
+	  <label>Apply...</label>
+	  <relief>GTK_RELIEF_NORMAL</relief>
+	  <child>
+	    <left_attach>1</left_attach>
+	    <right_attach>2</right_attach>
+	    <top_attach>1</top_attach>
+	    <bottom_attach>2</bottom_attach>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	    <xexpand>True</xexpand>
+	    <yexpand>True</yexpand>
+	    <xshrink>False</xshrink>
+	    <yshrink>False</yshrink>
+	    <xfill>True</xfill>
+	    <yfill>False</yfill>
+	  </child>
+	</widget>
+
+	<widget>
+	  <class>GtkRadioButton</class>
+	  <name>video0button</name>
+	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>toggled</name>
+	    <handler>OnVideoToggle</handler>
+	    <data>0</data>
+	    <last_modification_time>Thu, 11 Oct 2001 00:04:27 GMT</last_modification_time>
+	  </signal>
+	  <label>Video Channel 0</label>
+	  <active>False</active>
+	  <draw_indicator>True</draw_indicator>
+	  <child>
+	    <left_attach>0</left_attach>
+	    <right_attach>1</right_attach>
+	    <top_attach>0</top_attach>
+	    <bottom_attach>1</bottom_attach>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	    <xexpand>True</xexpand>
+	    <yexpand>True</yexpand>
+	    <xshrink>False</xshrink>
+	    <yshrink>False</yshrink>
+	    <xfill>True</xfill>
+	    <yfill>False</yfill>
+	  </child>
+	</widget>
+      </widget>
+
+      <widget>
+	<class>GtkHBox</class>
+	<name>hbox2</name>
+	<homogeneous>False</homogeneous>
+	<spacing>0</spacing>
+	<child>
+	  <padding>0</padding>
+	  <expand>True</expand>
+	  <fill>True</fill>
+	</child>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label4</name>
+	  <label>Color File</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>5</xpad>
+	  <ypad>0</ypad>
+	  <child>
+	    <padding>0</padding>
+	    <expand>False</expand>
+	    <fill>False</fill>
+	  </child>
+	</widget>
+
+	<widget>
+	  <class>GtkEntry</class>
+	  <name>colorfile</name>
+	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>activate</name>
+	    <handler>OnColorFileActivate</handler>
+	    <last_modification_time>Thu, 11 Oct 2001 00:13:08 GMT</last_modification_time>
+	  </signal>
+	  <editable>True</editable>
+	  <text_visible>True</text_visible>
+	  <text_max_length>0</text_max_length>
+	  <text>thresh.tmap</text>
+	  <child>
+	    <padding>0</padding>
+	    <expand>True</expand>
+	    <fill>True</fill>
+	  </child>
+	</widget>
+      </widget>
+    </widget>
+
+    <widget>
+      <class>GtkHButtonBox</class>
+      <name>hbuttonbox1</name>
+      <layout_style>GTK_BUTTONBOX_DEFAULT_STYLE</layout_style>
+      <spacing>0</spacing>
+      <child_min_width>85</child_min_width>
+      <child_min_height>27</child_min_height>
+      <child_ipad_x>0</child_ipad_x>
+      <child_ipad_y>0</child_ipad_y>
+      <child>
+	<padding>0</padding>
+	<expand>False</expand>
+	<fill>False</fill>
+      </child>
+
+      <widget>
+	<class>GtkButton</class>
+	<name>loadbutton</name>
+	<can_default>True</can_default>
+	<can_focus>True</can_focus>
+	<signal>
+	  <name>clicked</name>
+	  <handler>OnColorFileLoad</handler>
+	  <last_modification_time>Thu, 11 Oct 2001 00:13:30 GMT</last_modification_time>
+	</signal>
+	<label>Load...</label>
+	<relief>GTK_RELIEF_NORMAL</relief>
+      </widget>
+
+      <widget>
+	<class>GtkButton</class>
+	<name>savebutton</name>
+	<can_default>True</can_default>
+	<can_focus>True</can_focus>
+	<accelerator>
+	  <modifiers>0</modifiers>
+	  <key>GDK_s</key>
+	  <signal>clicked</signal>
+	</accelerator>
+	<signal>
+	  <name>clicked</name>
+	  <handler>OnColorFileSave</handler>
+	  <last_modification_time>Thu, 11 Oct 2001 00:13:42 GMT</last_modification_time>
+	</signal>
+	<label>Save</label>
+	<relief>GTK_RELIEF_NORMAL</relief>
+      </widget>
+
+      <widget>
+	<class>GtkButton</class>
+	<name>saveasbutton</name>
+	<can_default>True</can_default>
+	<can_focus>True</can_focus>
+	<signal>
+	  <name>clicked</name>
+	  <handler>OnColorFileSaveAs</handler>
+	  <last_modification_time>Thu, 11 Oct 2001 00:13:52 GMT</last_modification_time>
+	</signal>
+	<label>Save As...</label>
+	<relief>GTK_RELIEF_NORMAL</relief>
+      </widget>
+    </widget>
+
+    <widget>
+      <class>GtkStatusbar</class>
+      <name>statusbar</name>
+      <child>
+	<padding>0</padding>
+	<expand>False</expand>
+	<fill>False</fill>
+      </child>
+    </widget>
+  </widget>
+</widget>
+
+<widget>
+  <class>GtkWindow</class>
+  <name>colormapwin</name>
+  <signal>
+    <name>destroy</name>
+    <handler>OnQuit</handler>
+    <last_modification_time>Sat, 24 Nov 2001 01:54:45 GMT</last_modification_time>
+  </signal>
+  <signal>
+    <name>key_press_event</name>
+    <handler>OnKeyPress</handler>
+    <last_modification_time>Tue, 13 Nov 2001 19:55:53 GMT</last_modification_time>
+  </signal>
+  <title>Color Map</title>
+  <type>GTK_WINDOW_DIALOG</type>
+  <position>GTK_WIN_POS_NONE</position>
+  <modal>False</modal>
+  <allow_shrink>False</allow_shrink>
+  <allow_grow>True</allow_grow>
+  <auto_shrink>False</auto_shrink>
+
+  <widget>
+    <class>GtkVBox</class>
+    <name>vbox6</name>
+    <homogeneous>False</homogeneous>
+    <spacing>0</spacing>
+
+    <widget>
+      <class>GtkAspectFrame</class>
+      <name>aspectframe1</name>
+      <label_xalign>0</label_xalign>
+      <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <ratio>10</ratio>
+      <obey_child>True</obey_child>
+      <child>
+	<padding>0</padding>
+	<expand>True</expand>
+	<fill>True</fill>
+      </child>
+
+      <widget>
+	<class>GtkDrawingArea</class>
+	<name>cmap_darea</name>
+	<width>200</width>
+	<height>200</height>
+	<events>GDK_BUTTON1_MOTION_MASK | GDK_BUTTON_PRESS_MASK</events>
+	<signal>
+	  <name>configure_event</name>
+	  <handler>OnCMapConfigure</handler>
+	  <last_modification_time>Thu, 11 Oct 2001 01:14:32 GMT</last_modification_time>
+	</signal>
+	<signal>
+	  <name>button_press_event</name>
+	  <handler>OnCMapButtonPress</handler>
+	  <last_modification_time>Thu, 11 Oct 2001 01:14:21 GMT</last_modification_time>
+	</signal>
+	<signal>
+	  <name>motion_notify_event</name>
+	  <handler>OnCMapMotion</handler>
+	  <last_modification_time>Thu, 11 Oct 2001 01:15:10 GMT</last_modification_time>
+	</signal>
+	<signal>
+	  <name>expose_event</name>
+	  <handler>OnCMapExpose</handler>
+	  <last_modification_time>Fri, 09 Nov 2001 05:46:05 GMT</last_modification_time>
+	</signal>
+      </widget>
+    </widget>
+
+    <widget>
+      <class>GtkHBox</class>
+      <name>hbox3</name>
+      <homogeneous>False</homogeneous>
+      <spacing>0</spacing>
+      <child>
+	<padding>0</padding>
+	<expand>False</expand>
+	<fill>False</fill>
+      </child>
+
+      <widget>
+	<class>GtkVBox</class>
+	<name>vbox7</name>
+	<homogeneous>False</homogeneous>
+	<spacing>0</spacing>
+	<child>
+	  <padding>0</padding>
+	  <expand>True</expand>
+	  <fill>True</fill>
+	</child>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label9</name>
+	  <label>Intensity Level</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	  <child>
+	    <padding>0</padding>
+	    <expand>False</expand>
+	    <fill>False</fill>
+	  </child>
+	</widget>
+
+	<widget>
+	  <class>GtkHButtonBox</class>
+	  <name>hbuttonbox3</name>
+	  <layout_style>GTK_BUTTONBOX_SPREAD</layout_style>
+	  <spacing>0</spacing>
+	  <child_min_width>85</child_min_width>
+	  <child_min_height>27</child_min_height>
+	  <child_ipad_x>0</child_ipad_x>
+	  <child_ipad_y>0</child_ipad_y>
+	  <child>
+	    <padding>0</padding>
+	    <expand>True</expand>
+	    <fill>True</fill>
+	  </child>
+
+	  <widget>
+	    <class>GtkButton</class>
+	    <name>downbutton</name>
+	    <tooltip>decrease the displayed intensity level</tooltip>
+	    <can_default>True</can_default>
+	    <can_focus>True</can_focus>
+	    <accelerator>
+	      <modifiers>0</modifiers>
+	      <key>GDK_End</key>
+	      <signal>clicked</signal>
+	    </accelerator>
+	    <signal>
+	      <name>clicked</name>
+	      <handler>OnColorIDButton</handler>
+	      <data>(gpointer) -1</data>
+	      <last_modification_time>Thu, 11 Oct 2001 00:30:48 GMT</last_modification_time>
+	    </signal>
+	    <label>&lt;</label>
+	    <relief>GTK_RELIEF_NORMAL</relief>
+	  </widget>
+
+	  <widget>
+	    <class>GtkButton</class>
+	    <name>upbutton</name>
+	    <tooltip>Increase the displayed intensity level</tooltip>
+	    <can_default>True</can_default>
+	    <can_focus>True</can_focus>
+	    <accelerator>
+	      <modifiers>0</modifiers>
+	      <key>GDK_Home</key>
+	      <signal>clicked</signal>
+	    </accelerator>
+	    <signal>
+	      <name>clicked</name>
+	      <handler>OnColorIDButton</handler>
+	      <data>(gpointer) 1</data>
+	      <last_modification_time>Thu, 11 Oct 2001 00:30:56 GMT</last_modification_time>
+	    </signal>
+	    <label>&gt;</label>
+	    <relief>GTK_RELIEF_NORMAL</relief>
+	  </widget>
+	</widget>
+      </widget>
+
+      <widget>
+	<class>GtkVBox</class>
+	<name>vbox8</name>
+	<homogeneous>False</homogeneous>
+	<spacing>0</spacing>
+	<child>
+	  <padding>0</padding>
+	  <expand>True</expand>
+	  <fill>True</fill>
+	</child>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label8</name>
+	  <label>Color ID</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	  <child>
+	    <padding>0</padding>
+	    <expand>False</expand>
+	    <fill>False</fill>
+	  </child>
+	</widget>
+
+	<widget>
+	  <class>GtkHButtonBox</class>
+	  <name>hbuttonbox4</name>
+	  <layout_style>GTK_BUTTONBOX_SPREAD</layout_style>
+	  <spacing>0</spacing>
+	  <child_min_width>85</child_min_width>
+	  <child_min_height>27</child_min_height>
+	  <child_ipad_x>0</child_ipad_x>
+	  <child_ipad_y>0</child_ipad_y>
+	  <child>
+	    <padding>0</padding>
+	    <expand>True</expand>
+	    <fill>True</fill>
+	  </child>
+
+	  <widget>
+	    <class>GtkButton</class>
+	    <name>button1</name>
+	    <tooltip>previous color id</tooltip>
+	    <can_default>True</can_default>
+	    <can_focus>True</can_focus>
+	    <accelerator>
+	      <modifiers>0</modifiers>
+	      <key>GDK_Page_Down</key>
+	      <signal>clicked</signal>
+	    </accelerator>
+	    <signal>
+	      <name>clicked</name>
+	      <handler>OnCMapIntensityClicked</handler>
+	      <data>GINT_TO_POINTER(-1)</data>
+	      <last_modification_time>Fri, 09 Nov 2001 18:50:54 GMT</last_modification_time>
+	    </signal>
+	    <label>&lt;</label>
+	    <relief>GTK_RELIEF_NORMAL</relief>
+	  </widget>
+
+	  <widget>
+	    <class>GtkButton</class>
+	    <name>button2</name>
+	    <tooltip>next color id</tooltip>
+	    <can_default>True</can_default>
+	    <can_focus>True</can_focus>
+	    <accelerator>
+	      <modifiers>0</modifiers>
+	      <key>GDK_Page_Up</key>
+	      <signal>clicked</signal>
+	    </accelerator>
+	    <signal>
+	      <name>clicked</name>
+	      <handler>OnCMapIntensityClicked</handler>
+	      <data>GINT_TO_POINTER(1)</data>
+	      <last_modification_time>Fri, 09 Nov 2001 18:50:36 GMT</last_modification_time>
+	    </signal>
+	    <label>&gt;</label>
+	    <relief>GTK_RELIEF_NORMAL</relief>
+	  </widget>
+	</widget>
+      </widget>
+    </widget>
+
+    <widget>
+      <class>GtkStatusbar</class>
+      <name>colorstatusbar</name>
+      <child>
+	<padding>0</padding>
+	<expand>False</expand>
+	<fill>False</fill>
+      </child>
+    </widget>
+  </widget>
+</widget>
+
+<widget>
+  <class>GtkWindow</class>
+  <name>display</name>
+  <signal>
+    <name>destroy</name>
+    <handler>OnQuit</handler>
+    <last_modification_time>Sat, 24 Nov 2001 01:54:51 GMT</last_modification_time>
+  </signal>
+  <signal>
+    <name>key_press_event</name>
+    <handler>OnKeyPress</handler>
+    <last_modification_time>Tue, 13 Nov 2001 19:56:14 GMT</last_modification_time>
+  </signal>
+  <title>Display Window</title>
+  <type>GTK_WINDOW_DIALOG</type>
+  <position>GTK_WIN_POS_NONE</position>
+  <modal>False</modal>
+  <allow_shrink>False</allow_shrink>
+  <allow_grow>True</allow_grow>
+  <auto_shrink>False</auto_shrink>
+
+  <widget>
+    <class>GtkDrawingArea</class>
+    <name>image_area</name>
+    <events>GDK_POINTER_MOTION_MASK | GDK_BUTTON_MOTION_MASK | GDK_BUTTON1_MOTION_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK | GDK_KEY_PRESS_MASK</events>
+    <signal>
+      <name>button_press_event</name>
+      <handler>OnImageButtonPress</handler>
+      <last_modification_time>Thu, 11 Oct 2001 00:23:16 GMT</last_modification_time>
+    </signal>
+    <signal>
+      <name>configure_event</name>
+      <handler>OnImageConfigure</handler>
+      <last_modification_time>Thu, 11 Oct 2001 00:23:41 GMT</last_modification_time>
+    </signal>
+    <signal>
+      <name>expose_event</name>
+      <handler>OnImageExpose</handler>
+      <last_modification_time>Tue, 13 Nov 2001 19:41:53 GMT</last_modification_time>
+    </signal>
+    <signal>
+      <name>motion_notify_event</name>
+      <handler>on_image_area_motion_notify_event</handler>
+      <last_modification_time>Wed, 22 May 2002 01:09:30 GMT</last_modification_time>
+    </signal>
+    <signal>
+      <name>button_release_event</name>
+      <handler>on_image_area_button_release_event</handler>
+      <last_modification_time>Wed, 22 May 2002 01:11:05 GMT</last_modification_time>
+    </signal>
+  </widget>
+</widget>
+
+<widget>
+  <class>GtkWindow</class>
+  <name>window1</name>
+  <title>window1</title>
+  <type>GTK_WINDOW_TOPLEVEL</type>
+  <position>GTK_WIN_POS_NONE</position>
+  <modal>False</modal>
+  <allow_shrink>False</allow_shrink>
+  <allow_grow>True</allow_grow>
+  <auto_shrink>False</auto_shrink>
+
+  <widget>
+    <class>Placeholder</class>
+  </widget>
+</widget>
+
+</GTK-Interface>

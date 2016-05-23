@@ -1,0 +1,59 @@
+PWG
+
+PP  PP  PG
+WG  GW  WP
+
+WW  WW  WG
+PG  GP  PW
+
+GG  GG  GW
+PW  WP  PG
+
+----------
+
+    PP  PP  PP
+    PW  WP  WW
+
+PW  PW  PW  PW
+PP  PW  WP  WW
+
+WP  WP  WP  WP
+PP  PW  WP  WW
+
+WW  WW  WW
+PP  PW  WP
+
+---------------------------------
+
+Patterns available with four patches of two colors, asymmetric:
+      00  00  00
+      01  10  11
+
+  01  01  01  01
+  00  01  10  11
+
+  10  10  10  10
+  00  01  10  11
+
+  11  11  11
+  00  01  10
+
+Patterns available with four patches of two colors, symmetric:
+      00  00  00
+      01  10  11
+
+  dd  dd  nn  01
+  dd  dd  nn  11
+
+  dd  nn  dd  10
+  dd  nn  dd  11
+
+  dd  dd  dd
+  dd  dd  dd
+
+Patterns available with three patches of two colors, asymmetric:
+       001  010  011  100  101  110
+
+Patterns available with three patches of two colors, symmetric:
+  000  001  010  011  100  101  110  111
+  nnn       ddd       ddd  ddd  ddd  nnn

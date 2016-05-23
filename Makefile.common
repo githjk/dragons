@@ -1,0 +1,73 @@
+# /* LICENSE:
+#   =========================================================================
+#     CMDragons'02 RoboCup F180 Source Code Release
+#   -------------------------------------------------------------------------
+#     Copyright (C) 2002 Manuela Veloso, Brett Browning, Mike Bowling,
+#                        James Bruce; {mmv, brettb, mhb, jbruce}@cs.cmu.edu
+#     School of Computer Science, Carnegie Mellon University
+#   -------------------------------------------------------------------------
+#     This software is distributed under the GNU General Public License,
+#     version 2.  If you do not have a copy of this licence, visit
+#     www.gnu.org, or write: Free Software Foundation, 59 Temple Place,
+#     Suite 330 Boston, MA 02111-1307 USA.  This program is distributed
+#     in the hope that it will be useful, but WITHOUT ANY WARRANTY,
+#     including MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+#   ------------------------------------------------------------------------- */
+
+CC = g++
+
+BINDIR=$(TOPDIR)/bin
+
+CFLAGS += -I$(TOPDIR) -I$(TOPDIR)/include -I$(TOPDIR)/utils -Wall
+LDFLAGS += -L$(TOPDIR)/utils
+
+OPTFLAGS += -ffast-math -march=pentium
+OPTFLAGS += -O2
+OPTFLAGS += -g
+# CFLAGS += -pg
+
+DEFS += 
+
+%.o: %.cc
+	$(CC) -c $(CFLAGS) $(DEFS) $(OPTFLAGS) -o $@ $<
+
+%.o: %.c
+	$(CC) -c $(CFLAGS) $(DEFS) $(OPTFLAGS) -o $@ $<
+
+.%.dep: %.cc
+	@echo "Generating dependencies for: " $<
+	@$(CC) -M $(CFLAGS) $< > $@
+#
+# mhb:  I've changed this, because if a .h file disappears then this breaks
+#       the Makefiles completely since it needs to make that .h file in order
+#       to remake the depend file.  Bad thing.
+#
+#	@$(CC) -M $(CFLAGS) $< > $@.tmp
+#	@echo -n "$@ " >$@
+#	@cat $@.tmp >>$@
+#	@rm $@.tmp
+
+all::
+
+# cleanup object files and backup files
+clean::
+	@echo -n "cleaning :" 
+	@pwd
+	@rm -f *~ *.o *.bak
+
+depend:: $(patsubst %.cc,.%.dep,$(wildcard *.cc))
+
+# This allows small test programs to be written in the .cc file
+%_test: %.cc
+	$(CC) $(CFLAGS) $(DEFS) $(LDFLAGS) -DTEST_MAIN -g -o $@ $< -lutils
+
+# usage info
+usage::
+	@echo "USAGE: make [all | clean | test]"
+	@echo "USAGE: default is all"
+
+# This includes any depend files
+ifneq ($(wildcard .*.dep),)
+include .*.dep
+endif
+

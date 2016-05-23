@@ -1,0 +1,18 @@
+#!/usr/bin/zsh
+# clean up dependency files
+echo "cleaning up dependency files..."
+
+
+for file in *
+do
+    if [ -d $file ]
+    then
+	cd $file
+	echo cleaning $file...
+	rm .*.dep
+	rm -r \#cvs.locks
+	cd ..
+    fi
+done
+
+

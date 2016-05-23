@@ -1,0 +1,7 @@
+TO Do List:
+
+- add a prompt for exiting
+- add histogram display to drawhistogram --> show results & intensity
+- incorporate Makefiles with overall make files
+- incorporate camera calibration
+- add color testing

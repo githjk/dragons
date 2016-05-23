@@ -1,0 +1,384 @@
+/*
+ * TITLE:	Server.cc
+ *
+ * PURPOSE:	This is the main entry point for the vision server program
+ *              This file runs the main routine, starts the vision servers and
+ *              socket interface. 
+ *
+ * COMMAND LINE: the command line arguments are:
+ *
+ * WRITTEN BY:	      James R Bruce
+ * (C) Carnegie Mellon University
+ * Modified by: Brett Browning
+ *
+ * REVISION HISTORY:
+ * Nov 7, 2001 - ported code from 2001 code - BB
+ */
+#include <sys/types.h>
+#include <semaphore.h>
+#include <signal.h>
+#include <sys/poll.h>
+
+#include <stdlib.h>
+#include <stdio.h>
+
+#include "rtypes.h"
+#include "constants.h"
+#include "utils/vector.h"
+#include "utils/socket.h"
+
+#include "cmvision/capture.h"
+#include "camera.h"
+#include "vision.h"
+#include "detect.h"
+
+#include "reality/net_vision.h"
+
+
+/**************************** TYPES ******************************************/
+
+#define VISION_MAX_CLIENTS        8
+#define VISION_CLIENT_TTL       120
+
+#define NUM_CAMERAS 1
+
+#define IMAGE_WIDTH  640
+#define IMAGE_HEIGHT 240
+
+#define PIXEL_FORMAT V4L2_PIX_FMT_UYVY
+
+
+//==== Server Types ====//
+
+char *device_name[4] = { // 0 is missing
+  "/dev/video0",
+  "/dev/video1",
+  "/dev/video2",
+  "/dev/video3"
+};
+
+struct camera_t {
+  capture cap;
+  camera model;
+  pthread_t thread;
+};
+
+//struct client_t {
+//  sockaddr_in addr;
+//  int ttl;
+//};
+
+
+// macro to work on vision flags -- need work for confidence
+#define VFLAGS(present, orient)      (((present) ? V_LOC_ENABLED : 0) |  \
+				      ((orient) ? V_LOC_ORIENTATION : 0))
+
+/**************************** GLOBALS ****************************************/
+
+//client_t client[VISION_MAX_CLIENTS];
+int num_clients;
+int sock_recv,sock_send;
+
+camera_t camera[NUM_CAMERAS];
+LowVision vision;
+class detect detect;
+vlocations loc;
+
+sem_t vision_mutex;
+bool run_daemon;
+bool running;
+
+char fname[256];
+bool save_image;
+int image_num;
+
+// comms sockets
+Socket vision_s(NET_VISION_PROTOCOL, NET_VISION_ACK_PERIOD);
+
+
+
+/***************************** PROTOTYPES ************************************/
+void SendUpdateToClients(void);
+bool operator ==(sockaddr_in &a,sockaddr_in &b);
+int FindClient(sockaddr_in &addr);
+void VisionDaemon(camera_t *cam);
+bool Initialize();
+void Close();
+bool SetTeam(tparam &param);
+void SaveThresholdImage();
+void Reset();
+void handle_stop(int i);
+
+
+/***************************** CODE ******************************************/
+
+
+/*
+ * main -
+ *
+ * RETURN VALUE: 0 on success, error code on failure
+ */
+int main(int argc,char *argv[])
+{
+  pollfd pfd;
+  int n;
+  bool sleeping;
+  net_vconfig vc;
+
+  // Init vision & detection system
+  Initialize();
+
+  /* Open the vision socket */
+  printf("Opening vision socket as server...\n");
+  if (vision_s.connect_server(NET_VISION_PORT) != Socket::Server) {
+    fprintf(stderr, "Cannot create vision server on %d\n", NET_VISION_PORT);
+    return(-1);
+  }
+
+  printf("==== Running ================\n");
+
+  pfd.fd = vision_s.getfd();
+  pfd.events = POLLIN;
+  sleeping = false;
+
+  running = true;
+  signal(SIGINT,handle_stop);
+
+  while(running){
+    // really need to block on this. Should use polling maybe?
+
+    pfd.revents = 0;
+    n = poll(&pfd,1,1000);
+
+    printf(".");
+
+    /* see if there is anything we need to read */
+    if (vision_s.ready_for_recv()) {
+      vision_s.recv(&vc, sizeof(net_vconfig));
+
+      // do something with te hresults
+    }
+  }
+
+  printf("closing down");
+
+  // close everything up
+  vision_s.disconnect();
+  Close();
+
+  // all done
+  return(0);
+}
+
+
+
+void SendUpdateToClients()
+{
+  net_vframe vf;
+
+  /* check to see if there are new connections */
+  while(vision_s.ready_for_accept()) 
+    vision_s.accept();
+
+  /* check if socket is okay */
+  if (!vision_s.ready_for_send()) 
+    return;
+
+  /* make the vframe packet */
+  vf.msgtype         = NET_VISION_FRAME;
+  vf.timestamp       = loc.timestamp;
+
+  // copy the data across
+  // need to do something about confidence measure
+  vf.ball.timestamp = loc.ball.timestamp;
+  vf.ball.loc = loc.ball.cur.loc;
+  vf.ball.angle = loc.ball.cur.angle;
+  vf.ball.flags = VFLAGS(loc.ball.conf > 0.5, false); 
+
+  for (int t = 0; t < NUM_TEAMS; t++) {
+    for (int i = 0; i < MAX_TEAM_ROBOTS; i++) {
+      vf.robot[t][i].timestamp = loc.robot[t][i].timestamp;
+      vf.robot[t][i].loc       = loc.robot[t][i].cur.loc; 
+      vf.robot[t][i].angle     = loc.robot[t][i].cur.angle; 
+      vf.robot[t][i].flags     = VFLAGS(loc.robot[t][i].conf > 0.5,
+					loc.robot[t][i].orientation); 
+    }
+  }
+
+  /* work out the referee -- dumb for now */
+  // need ot get this from radio server
+  vf.refstate = REF_GO;
+ 
+  /* send it off */
+  vision_s.send(&vf, sizeof(vf));
+}
+
+
+void VisionDaemon(camera_t *cam)
+{
+  int frame_index,field,ret;
+  double timestamp;
+  pixel *buf;
+  image img;
+
+  img.width  = IMAGE_WIDTH;
+  img.height = IMAGE_HEIGHT;
+  img.pitch  = IMAGE_WIDTH;
+
+  while (run_daemon){
+    buf = (pixel*)cam->cap.captureFrame(frame_index,field);
+    if(buf) {
+      timestamp = cam->cap.getFrameTimeSec();
+      // printf("%d %f\n",field,timestamp);
+
+      // lock the CMVision class and process the frame
+      sem_wait(&vision_mutex);
+      img.buf = buf;
+      vision.processFrame(img,field);
+
+      // run detection and tracking
+      detect.update(loc,vision,cam->model,timestamp);
+      // detect.getLocations(loc);
+
+      // Send new information to clients
+      SendUpdateToClients();
+
+      if(save_image){
+	vision.saveThresholdImage(fname);
+	save_image = false;
+      }
+
+      sem_post(&vision_mutex);
+      cam->cap.releaseFrame((unsigned char*)buf,frame_index);
+    }
+  }
+
+  ret = 0;
+  pthread_exit(&ret);
+}
+
+bool Initialize()
+{
+  char *configdir;
+  char tmapf[256];
+  int i;
+
+  run_daemon = true;
+  sem_init(&vision_mutex,0,1);
+
+  printf("==== Initializing Vision ====\n",i+1);
+
+  configdir = getenv("F180CONFIG");
+  if(!configdir) configdir = ".";
+
+  printf("  Config  Directory: %s\n",configdir);
+
+  // initialize capture
+  for(i=0; i<NUM_CAMERAS; i++){
+    if(camera[i].cap.initialize(device_name[i],
+         IMAGE_WIDTH,IMAGE_HEIGHT,PIXEL_FORMAT)){
+      printf("  Initialized capture %d.\n",i+1);
+    }else{
+      printf("  ERROR: Could not initialize capture %d.\n",i+1);
+      return(false);
+    }
+  }
+
+  // load camera models
+  for(i=0; i<NUM_CAMERAS; i++){
+    sprintf(fname,"%s/camera%d.txt",configdir,i+1);
+    if(camera[i].model.loadParam(fname)){
+      printf("  Initialized camera model %d.\n",i+1);
+      // sprintf(buf,"camera%d-out.txt",i+1);
+      // camera[i].model.print(); // saveParam(buf);
+    }else{
+      printf("  ERROR: Could not initialize camera model %d.\n",i+1);
+      return(false);
+    }
+  }
+
+  // Init vision
+  sprintf(fname,"%s/%s",configdir,"colors.txt");
+  sprintf(tmapf,"%s/%s",configdir,"thresh.tmap");
+  if(vision.initialize(fname,tmapf,IMAGE_WIDTH,IMAGE_HEIGHT)){
+    printf("  CMVision initialized.\n");
+  }else{
+    printf("  ERROR: Could not initialize CMVision.\n");
+    return(false);
+  }
+
+  // spawn update daemon thread(s)
+  for(i=0; i<NUM_CAMERAS; i++){
+    if(!pthread_create(&camera[i].thread,NULL,
+          (pthread_start)VisionDaemon,(void*)&camera[i])){
+      printf("  Started vision daemon %d.\n",i+1);
+    }else{
+      printf("  ERROR: Could not start vision daemon %d.\n",i+1);
+      return(false);
+    }
+  }
+
+  return(true);
+}
+
+void Close()
+{
+  int i;
+
+  printf("==== Closing Vision ====\n",i+1);
+
+  // Flag exit and join all threads
+  run_daemon = false;
+  for(i=0; i<NUM_CAMERAS; i++){
+    pthread_join(camera[i].thread,NULL);
+  }
+
+  // close all capture classes
+  for(i=0; i<NUM_CAMERAS; i++){
+    camera[i].cap.close();
+  }
+
+  sem_destroy(&vision_mutex);
+
+  // close CMVision
+  vision.close();
+}
+
+#define VALIDTEAM(x) (x==TEAM_BLUE || x==TEAM_YELLOW)
+
+bool SetTeam(tparam &param)
+{
+  int t,i;
+
+  t = param.team;
+  if(VALIDTEAM(t) &&
+     (param.num_robots>=0 && param.num_robots<=MAX_TEAM_ROBOTS)){
+    loc.param[t] = param;
+    detect.updateParams(loc);
+    return(true);
+  }else{
+    return(false);
+  }
+}
+
+void SaveThresholdImage()
+{
+  image_num++;
+  sprintf(fname,"cmap%03d.ppm",image_num);
+  save_image = true;
+}
+
+void Reset()
+{
+  detect.reset();
+}
+
+
+void handle_stop(int i)
+{
+  // printf("caught break; stopping.\n");
+  run_daemon = false;
+  running = false;
+}
+
+

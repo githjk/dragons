@@ -1,0 +1,144 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>CMDragons 02 Help File</title>
+  </head>
+
+  <body>
+    <h1>Basic Simulator Help: Getting started</h1>
+
+    <body bgcolor="#FFFFFF">
+      
+
+
+      <h2>Getting the Code:</h2>
+      <p>
+	To get the code you need to check it out from the CVS repository. The repository
+	is located on calvin.prodigy.cs.cmu.edu. You need to have an account set up on
+	calvin. Accessing the code is then done via ssh as follows:
+
+	Set up the CVSROOT and CVS_RSH environment variables as (for TCSH):
+      </p>
+      <blockquote>
+	<p><b>
+	    ~/mydir&gt; setenv CVSROOT :ext:calvin.prodigy.cs.cmu.edu:/home/small/repository
+	    ~/mydir&gt; setenv CVS_RSH ssh
+	  </b></p>
+      </blockquote>
+      <p>
+	BASH and ZSH will be:
+      </p>
+      <blockquote>
+	<p><b>
+	    ~/mydir&gt; export&nbsp; CVSROOT=:ext:calvin.prodigy.cs.cmu.edu:/home/small/repository
+	    ~/mydir&gt; export&nbsp; CVS_RSH=ssh
+	  </b></p>
+      </blockquote>
+      <p>
+	Now you check out the code by running cvs as:
+      </p>
+      <blockquote>
+	<p><b>~/mydir&gt; cvs co dragons</b></p>
+      </blockquote>
+      <p>
+	This will create the <i>dragons </i> directory with all the code
+	Then all you need to do is compile and run it. If you have
+	any difficulties getting the code email the 
+	<a href="mailto:brettb+dragons@cs.cmu.edu"> brett </a>, 
+	<a href="mailto:mhb@cs.cmu.edu"> Mike </a>, or
+	<a href="mailto:jbruce@cs.cmu.edu"> Jim </a> for help.
+      </p>
+      <p>
+	If you already have the code and want to update your copy then run:
+      </p>
+      <blockquote>
+	<p><b>~/mydir&gt; cvs upd -d</b></p>
+      </blockquote>
+      <p>
+	This will update all the code. Pass in -n -q if you want to see what it will
+	change first without actually changing anything. Running <b>man cvs</b> will
+	give you the meaning behind all these commands. 
+
+	Alternatively, run the <i>check</i> command in the dragons directory or the
+	the update command to do the same thing.
+      </p>
+      <h2>Making the Code: </h2>
+      <p>
+	To compile the code you need to go to the top-level dragons directory and run make. 
+	This will automatically make all the submodules and link the binaries located in the
+	bin directory to the appropriate executables.
+	run&nbsp; </p>
+<blockquote>
+	<p style="line-height: 100%; margin-top: 0; margin-bottom: 0"><b>~/mydir&gt/dragons;
+	    make</b></p>
+      </blockquote>
+      <p style="line-height: 100%; margin-top: 0; margin-bottom: 0">You will then get
+	a whole lot of output. If you get any errors the make program should halt and
+	report what that error was. If it was a fresh checkout/update then something is
+	wrong and you should contact the <a href="mailto:brettb+dragons@cs.cmu.edu">guy
+	  in charge</a>. </p>
+      <h2>Running the Code: </h2>
+      <p> To run the code go to the bin directory. I usually run with 3 windows, one for
+	each executing program. 
+	<ol>
+	  <li> The first step is to run the simulator or the rsever. The <i>./simulator</i> 
+	    runs the simulation package and the <i>./rsever</i> runs the real robots and
+	    must run on <i>calvin</i>. Both have various command line options. Run them with
+	    <i>-h</i> to find out what the options are.
+	  </li>
+	  <li> Next run the main soccer program from the bin directory. Do this by executing 
+	    <i>./soccer</i> in the bin directory. If you are not running soccer on calvin
+	    you need to specify what machine it can connect to to find the rserver or simulator.
+	    You do this via the <i>-V < host ></i> command line option.
+	    As with all programs <i>-h</i> will list all the options.
+	  </li>
+	  <li> The next step is to run the GUI. This can be done from any machine. Execute
+	    the command <i>./gui</i> from teh bin directory to start it. If you are not
+	    running on calvin you need to specify what machine to connect to for vision 
+	    <i>-V < host ></i> and soccer <i>-S < host ></i>
+	  </li>
+	  <li>Now choose the players by clicking on the yellow and blue tool bar icon (this is
+	    meant to be a team of robots). Hold the mouse of the button to get the tool
+	    tip if you are not sure. When you click this a side panel will show up that
+	    has a range of edit boxes. Type how many opponents you want. Then type the
+	    robot cover ...something like:
+	    <blockquote>
+	      <ul>
+		<li>Diffbot 0 enter cover 1 and click the check button&nbsp;</li>
+		<li>Diffbot 1 enter cover 2 and click the check button&nbsp;</li>
+		<li>Diffbot 2 enter cover 3 and click the check button&nbsp;</li>
+		<li>Omnibot 0 enter cover 4 and click the check button&nbsp;</li>
+		<li>Omnibot 1 enter cover 5 and click the check button</li>
+	      </ul>
+	      <p>Then click set. You should get 5 robots appearing on the field with
+		however many opponents you selected.</p>
+	    </blockquote>
+	  </li>
+	  <li>To move them by hand click and drag with the left mouse button. To orient
+	    click and drag with teh right mouse button. To get them to go to a point
+	    click and drag with the middle mouse button To drive them manually click on
+	    one and use i, k forward and backwards, j, l sideways on the omnibot a, s
+	    turn left and right</li>
+	  <li>The debug level controls the debug display. It is something like:
+	    <blockquote>
+	      <ul>
+		<li>10 allows all - kalman filter position, obstacle avoidance,
+		  kicking&nbsp;</li>
+		<li>5 or 6 - obstacle avoidance and kicking</li>
+	      </ul>
+	    </blockquote>
+	    <p>play around with it and see what you get.</li>
+	  <li>To run a particular tactic type the name and its parameters in the tactics
+	    box. To run the team type strategy 4 3 2 1 0. Click on the GC toolbar icon
+	    to get the game control panel. Then click move to kickoff us or kickoff
+	    them. Then click start to make it all happen. Currently the opponents don't
+	    actually move....this is going to happen soon.</li>
+	</ol>
+<hr>
+<address><a href="mailto:brettb@cs.cmu.edu">Brett Browning</a></address>
+<!-- Created: Wed Feb  6 12:11:02 EST 2002 -->
+<!-- hhmts start -->
+Last modified: Sun Apr 21 18:40:01 EDT 2002
+<!-- hhmts end -->
+    </body>
+</html>

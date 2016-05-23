@@ -1,0 +1,7 @@
+
+look for team markers
+sort by confidence
+eliminate too-near duplicates
+look for orientation and identification markers around each
+do a weighted matching with current state given previous
+  locations and id determination
